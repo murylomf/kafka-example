@@ -1,6 +1,17 @@
-﻿services:
-  kafkaexample:
-    image: kafkaexample
-    build:
-      context: .
-      dockerfile: KafkaExample/Dockerfile
+﻿version: '3.7'
+
+services:
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LOG_DIRS: /kafka/kafka-logs
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -2,6 +2,7 @@ using Carter;
 using Carter.OpenApi;
 using Confluent.Kafka;
 using FluentValidation;
+using KafkaExample.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,14 +60,14 @@ public class kafkaModule : ICarterModule
             .WithName("CreateProduct")
             .IncludeInOpenApi();
         
-        app.MapPost("api/create-producer", async (ISender sender) =>
+        app.MapPost("api/create-producer", async (ISender sender, ProducerRequest request) =>
             {
                 var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
 
                 using var producer = new ProducerBuilder<Null, string>(config).Build();
                 try
                 {
-                    var deliveryResult = await producer.ProduceAsync("meu-topico", new Message<Null, string> { Value = "Olá, Kafka!" });
+                    var deliveryResult = await producer.ProduceAsync("meu-topico", new Message<Null, string> { Value = request.Value });
                     Console.WriteLine($"Mensagem: '{deliveryResult.Value}' enviada para o tópico '{deliveryResult.TopicPartitionOffset}'");
                 }
                 catch (ProduceException<Null, string> e)
@@ -75,7 +76,7 @@ public class kafkaModule : ICarterModule
                 }
             })
             .WithTags("Kafka")
-            .WithName("CreateProduct")
+            .WithName("CreateProducer")
             .IncludeInOpenApi();
     }
 }
