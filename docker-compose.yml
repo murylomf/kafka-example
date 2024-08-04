@@ -1,0 +1,6 @@
+﻿services:
+  kafkaexample:
+    image: kafkaexample
+    build:
+      context: .
+      dockerfile: KafkaExample/Dockerfile
